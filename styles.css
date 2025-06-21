@@ -1,0 +1,144 @@
+/* Filter overlay styles */
+.filter-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 20, 25, 0.8);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-message {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 300px;
+    border: 1px solid #e1e8ed;
+  }
+  
+  .filter-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .filter-text strong {
+    color: #0f1419;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .filter-text p {
+    color: #536471;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+  }
+  
+  .filter-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #657786;
+    margin-bottom: 15px;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .filter-meta .confidence {
+    font-weight: 500;
+  }
+  
+  .filter-meta .method {
+    font-style: italic;
+  }
+  
+  .show-content-btn {
+    background: #1d9bf0;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .show-content-btn:hover {
+    background: #1a8cd8;
+  }
+  
+  /* Filtered content styling */
+  .filtered-content {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .filtered-content:not(.content-revealed) > *:not(.filter-overlay) {
+    filter: blur(2px);
+    opacity: 0.3;
+  }
+  
+  /* Animation for revealing content */
+  .content-revealed .filter-overlay {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .content-revealed > *:not(.filter-overlay) {
+    filter: none !important;
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+  }
+  
+  /* Ensure overlay works on different Twitter layouts */
+  [data-testid="tweet"].filtered-content,
+  article[role="article"].filtered-content {
+    position: relative;
+  }
+  
+  /* Handle dark mode */
+  @media (prefers-color-scheme: dark) {
+    .filter-overlay {
+      background: rgba(0, 0, 0, 0.8);
+    }
+    
+    .filter-message {
+      background: #15202b;
+      border-color: #38444d;
+    }
+    
+    .filter-text strong {
+      color: #ffffff;
+    }
+    
+    .filter-text p {
+      color: #8b98a5;
+    }
+  }
+  
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .filter-message {
+      max-width: 250px;
+      padding: 15px;
+    }
+    
+    .filter-text strong {
+      font-size: 14px;
+    }
+    
+    .filter-text p {
+      font-size: 13px;
+    }
+  }

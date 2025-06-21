@@ -1,0 +1,37 @@
+{
+    "manifest_version": 3,
+    "name": "Smart Social Filter",
+    "version": "1.0",
+    "description": "Filter social media content based on your preferences using AI",
+    "permissions": [
+      "activeTab",
+      "storage",
+      "contextMenus"
+    ],
+    "host_permissions": [
+      "https://twitter.com/*",
+      "https://x.com/*",
+      "http://localhost:11434/*",
+      "http://localhost:11435/*"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["https://twitter.com/*", "https://x.com/*"],
+        "js": ["content.js"],
+        "css": ["styles.css"]
+      }
+    ],
+    "action": {
+      "default_popup": "popup.html",
+      "default_title": "Smart Social Filter"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["overlay.html"],
+        "matches": ["https://twitter.com/*", "https://x.com/*"]
+      }
+    ]
+  }
