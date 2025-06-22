@@ -1,6 +1,6 @@
 AI-based Social Media Content Filtering
 
-Made for Speaking with Machines Hackathon in SF, 6/21.
+Made for Speaking with Machines Hackathon in SF, 6/21/25.
 
 Instructions:
 
