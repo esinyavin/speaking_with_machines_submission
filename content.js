@@ -10,8 +10,8 @@ class TwitterContentFilter {
     }
   
     async initializeFilter() {
-      // Initialize DeepSeek worker
-      await this.initializeDeepSeek();
+      // Initialize Model
+      await this.initializeModel();
       
       // Load filters from storage
       await this.loadFilters();
@@ -39,7 +39,7 @@ class TwitterContentFilter {
       });
     }
   
-    async initializeDeepSeek() {
+    async initializeModel() {
       try {
         console.log('🤖 Initializing API connection via background script...');
         
@@ -188,92 +188,6 @@ class TwitterContentFilter {
           details: error.message || 'Unknown error'
         }));
       }
-    }
-  
-    keywordFilterContent(text) {
-      // Fallback keyword-based filtering
-      const lowerText = text.toLowerCase();
-      
-      for (const filter of this.filters) {
-        const filterWords = filter.toLowerCase().split(' ');
-        const matchCount = filterWords.filter(word => 
-          lowerText.includes(word) || this.semanticMatch(lowerText, word)
-        ).length;
-        
-        // If more than half of the filter words match, consider it a match
-        if (matchCount >= Math.ceil(filterWords.length / 2)) {
-          return {
-            shouldFilter: true,
-            reason: filter,
-            confidence: `${(matchCount / filterWords.length * 100).toFixed(0)}%`,
-            method: 'Keywords'
-          };
-        }
-      }
-  
-      return { shouldFilter: false, method: 'Keywords' };
-    }
-  
-    semanticMatch(text, filterWord) {
-      // Enhanced semantic matching with more comprehensive synonyms
-      const synonyms = {
-        // Politics
-        'political': ['politics', 'election', 'vote', 'voting', 'government', 'politician', 'congress', 'senate', 'president', 'democratic', 'republican', 'liberal', 'conservative', 'policy', 'campaign', 'ballot', 'candidate'],
-        'politics': ['political', 'election', 'vote', 'voting', 'government', 'politician', 'congress', 'senate', 'president', 'democratic', 'republican', 'liberal', 'conservative', 'policy', 'campaign'],
-        
-        // Cryptocurrency  
-        'crypto': ['cryptocurrency', 'bitcoin', 'ethereum', 'blockchain', 'nft', 'defi', 'web3', 'metaverse', 'token', 'coin', 'mining', 'wallet', 'exchange', 'trading'],
-        'cryptocurrency': ['crypto', 'bitcoin', 'ethereum', 'blockchain', 'nft', 'defi', 'web3', 'metaverse', 'token', 'coin', 'mining'],
-        'bitcoin': ['btc', 'crypto', 'cryptocurrency', 'blockchain', 'mining', 'satoshi'],
-        
-        // Sports
-        'sports': ['football', 'basketball', 'soccer', 'baseball', 'tennis', 'golf', 'hockey', 'game', 'match', 'tournament', 'championship', 'playoff', 'season', 'team', 'player', 'coach', 'stadium', 'league'],
-        'football': ['nfl', 'quarterback', 'touchdown', 'superbowl', 'sports', 'game', 'match'],
-        'basketball': ['nba', 'playoffs', 'championship', 'sports', 'game', 'match', 'court'],
-        
-        // Negative content
-        'negative': ['sad', 'angry', 'hate', 'terrible', 'awful', 'bad', 'depressing', 'tragic', 'horrible', 'devastating', 'outrage', 'disgusting', 'shocking'],
-        'toxic': ['hate', 'angry', 'disgusting', 'terrible', 'awful', 'horrible', 'nasty', 'mean'],
-        
-        // News/Breaking
-        'news': ['breaking', 'report', 'update', 'alert', 'happening', 'developing', 'latest', 'urgent', 'exclusive', 'story'],
-        'breaking': ['news', 'alert', 'urgent', 'developing', 'happening', 'latest', 'update'],
-        
-        // Technology
-        'tech': ['technology', 'software', 'hardware', 'computer', 'programming', 'coding', 'developer', 'startup', 'innovation'],
-        'ai': ['artificial intelligence', 'machine learning', 'deep learning', 'neural network', 'chatgpt', 'openai', 'anthropic'],
-        
-        // Entertainment
-        'celebrity': ['famous', 'star', 'actor', 'actress', 'singer', 'musician', 'influencer', 'tiktoker', 'youtuber'],
-        'music': ['song', 'album', 'artist', 'band', 'concert', 'tour', 'spotify', 'streaming'],
-        
-        // Finance
-        'finance': ['money', 'stock', 'investment', 'trading', 'market', 'economy', 'recession', 'inflation', 'bank'],
-        'stock': ['market', 'trading', 'investment', 'shares', 'nasdaq', 'dow', 'sp500', 'finance']
-      };
-  
-      // Direct word matching
-      for (const [key, words] of Object.entries(synonyms)) {
-        if (filterWord.includes(key) || key.includes(filterWord)) {
-          return words.some(word => text.includes(word));
-        }
-      }
-  
-      // Partial matching for compound words
-      const partialMatches = {
-        'political': text.match(/\b(politic\w*|govern\w*|election\w*|campaign\w*)\b/i),
-        'crypto': text.match(/\b(crypto\w*|bitcoin\w*|blockchain\w*|nft\w*)\b/i),
-        'sports': text.match(/\b(sport\w*|game\w*|match\w*|playoff\w*)\b/i),
-        'negative': text.match(/\b(hate\w*|angry\w*|terrible\w*|awful\w*)\b/i)
-      };
-  
-      for (const [key, regex] of Object.entries(partialMatches)) {
-        if (filterWord.includes(key) && regex) {
-          return true;
-        }
-      }
-  
-      return false;
     }
   
     applyFilter(tweetElement, reason, confidence, method) {
